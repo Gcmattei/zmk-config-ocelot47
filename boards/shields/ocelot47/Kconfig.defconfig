@@ -1,0 +1,6 @@
+if SHIELD_OCELOT47
+
+config ZMK_KEYBOARD_NAME
+    default "ocelot47"
+
+endif # SHIELD_OCELOT47
