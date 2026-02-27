@@ -15,6 +15,7 @@ url: https://github.com/Gcmattei/Ocelot47
 features:
   - keys
   - studio  # Remove this line if your keyboard will not support ZMK Studio
+  - underglow
 
 requires:
   - pro_micro
