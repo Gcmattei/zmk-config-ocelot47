@@ -6,7 +6,7 @@
 #include "ocelot47-layouts.dtsi"
 
 &physical_layout0 {
-    kscan = <&kscan0>; // Label of the kscan node this layout uses
+    kscan = <&kscan>; // Label of the kscan node this layout uses
     transform = <&default_transform>; // Label of the matrix transform this layout uses
 };
 
