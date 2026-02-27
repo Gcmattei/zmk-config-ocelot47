@@ -4,12 +4,10 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 #include "ocelot47-layouts.dtsi"
-#include "boards/nice_nano_nrf52840_zmk.overlay"
 
 / {
     chosen {
         zmk,physical-layout = &default_layout;
-        zmk,underglow = &led_strip;
     };
 
     kscan: kscan {
