@@ -7,8 +7,6 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/rgb.h>
 
-#define BT_NXT() &bt BT_NXT
-
 / {
     // macros {
     //     bt_next: bt_next {
