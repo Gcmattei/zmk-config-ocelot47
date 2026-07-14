@@ -42,12 +42,12 @@
             tapping-term-ms = <200>;
             bindings = <&kp LSHFT>, <&kp CAPS>;
         };
-        td1: tap_dance_1 {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            tapping-term-ms = <200>;
-            bindings = <&bt_clear>, <&bt_next>;
-        };
+        // td1: tap_dance_1 {
+        //     compatible = "zmk,behavior-tap-dance";
+        //     #binding-cells = <0>;
+        //     tapping-term-ms = <200>;
+        //     bindings = <&bt_clear>, <&bt_next>;
+        // };
     };
     // Define a default keymap here.
     // See https://zmk.dev/docs/development/hardware-integration/new-shield#default-keymap.
@@ -67,7 +67,7 @@
             display-name = "FN";
             bindings = <
                 &kp F1     &kp F2   &kp F3   &kp F4   &kp F5   &kp F6   &kp F7   &kp F8   &kp F9    &kp F10  &kp F11   &kp F12
-                &td1   &kp N1   &kp N2   &kp N3   &kp N4   &kp N5   &kp N6   &kp N7   &kp N8    &kp N9   &kp N0    &kp DEL
+                &trans   &kp N1   &kp N2   &kp N3   &kp N4   &kp N5   &kp N6   &kp N7   &kp N8    &kp N9   &kp N0    &kp DEL
                 &trans   &trans   &trans   &trans   &trans   &trans   &trans   &trans   &trans    &trans   &kp PG_UP &kp PSCRN
                 &studio_unlock     &trans  &trans   &trans   &trans      &trans         &trans   &trans    &kp HOME &kp PG_DN &kp END
             >;
