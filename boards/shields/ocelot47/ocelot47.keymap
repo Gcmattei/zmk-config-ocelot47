@@ -15,35 +15,19 @@
             tapping-term-ms = <200>;
             bindings = <&kp LSHFT>, <&kp CAPS>;
         };
-        td1: tap_dance_1 {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
+        bt_tap: behavior_bt_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
             tapping-term-ms = <200>;
-            bindings = <&kp BT_NXT>, <&kp BT_CLR>;
+            bindings = <&bt>, <&bt>;
         };
-        td2: tap_dance_2 {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
+        rgb_tap: behavior_rgb_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
             tapping-term-ms = <200>;
-            bindings = <&rgb_ug RGB_EFF>, <&rgb_ug RGB_TOG>;
-        };
-        td3: tap_dance_3 {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            tapping-term-ms = <200>;
-            bindings = <&rgb_ug RGB_BRI>, <&rgb_ug RGB_BRD>;
-        };
-        td4: tap_dance_4 {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            tapping-term-ms = <200>;
-            bindings = <&rgb_ug RGB_HUI>, <&rgb_ug RGB_HUD>;
-        };
-        td5: tap_dance_5 {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            tapping-term-ms = <200>;
-            bindings = <&rgb_ug RGB_SAI>, <&rgb_ug RGB_SAD>;
+            bindings = <&rgb_ug>, <&rgb_ug>;
         };
     };
     // Define a default keymap here.
@@ -64,9 +48,9 @@
             display-name = "FN";
             bindings = <
                 &kp F1     &kp F2   &kp F3   &kp F4   &kp F5   &kp F6   &kp F7   &kp F8   &kp F9    &kp F10  &kp F11   &kp F12
-                &td1     &kp N1   &kp N2   &kp N3   &kp N4   &kp N5   &kp N6   &kp N7   &kp N8    &kp N9   &kp N0    &kp DEL
-                &td2   &td3   &td4   &td5   &trans   &trans   &trans   &trans   &trans    &trans   &kp PG_UP &kp PSCRN
-                &studio_unlock     &bootloader  &trans   &trans   &trans      &trans         &trans   &trans    &kp HOME &kp PG_DN &kp END
+                &bt_tap BT_CLR BT_NXT   &kp N1   &kp N2   &kp N3   &kp N4   &kp N5   &kp N6   &kp N7   &kp N8    &kp N9   &kp N0    &kp DEL
+                &rgb_tap RGB_TOG RGB_EFF   &rgb_tap RGB_BRI RGB_BRD   &rgb_tap RGB_HUI RGB_HUD   &rgb_tap RGB_SAI RGB_SAD   &trans   &trans   &trans   &trans   &trans    &trans   &kp PG_UP &kp PSCRN
+                &studio_unlock     &trans  &trans   &trans   &trans      &trans         &trans   &trans    &kp HOME &kp PG_DN &kp END
             >;
         };
 
