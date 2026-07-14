@@ -10,33 +10,33 @@
 #define BT_NXT() &bt BT_NXT
 
 / {
-    macros {
-        bt_next: bt_next {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings
-                = <&macro_tap &bt BT_NXT>;
-        };
-        bt_clear: bt_clear {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings
-                = <&macro_tap &bt BT_CLR>;
-        };
-        rgb_toggle: rgb_toggle {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings
-                = <&rgb_ug RGB_TOG>;
-        };
-        rgb_effect: rgb_effect {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings
-                = <&rgb_ug RGB_EFF>;
-        };
-        //RGB_BRI RGB_BRD   &rgb_tap RGB_HUI RGB_HUD   &rgb_tap RGB_SAI RGB_SAD 
-    };
+    // macros {
+    //     bt_next: bt_next {
+    //         compatible = "zmk,behavior-macro";
+    //         #binding-cells = <0>;
+    //         bindings
+    //             = <&macro_tap &bt BT_NXT>;
+    //     };
+    //     bt_clear: bt_clear {
+    //         compatible = "zmk,behavior-macro";
+    //         #binding-cells = <0>;
+    //         bindings
+    //             = <&macro_tap &bt BT_CLR>;
+    //     };
+    //     rgb_toggle: rgb_toggle {
+    //         compatible = "zmk,behavior-macro";
+    //         #binding-cells = <0>;
+    //         bindings
+    //             = <&rgb_ug RGB_TOG>;
+    //     };
+    //     rgb_effect: rgb_effect {
+    //         compatible = "zmk,behavior-macro";
+    //         #binding-cells = <0>;
+    //         bindings
+    //             = <&rgb_ug RGB_EFF>;
+    //     };
+    //     //RGB_BRI RGB_BRD   &rgb_tap RGB_HUI RGB_HUD   &rgb_tap RGB_SAI RGB_SAD 
+    // };
     behaviors {
         td0: tap_dance_0 {
             compatible = "zmk,behavior-tap-dance";
