@@ -1,32 +1,155 @@
-// This file was generated from a template. Edit it to match your keyboard.
-// See https://zmk.dev/docs/development/hardware-integration/new-shield for more instructions.
+/*
+ * Ocelot47 keymap rev 2: Base, SYM, NUM, FN, SYS.
+ *
+ * Status: layout approved by Gustavo 2026-10-05. Not flashed or tested on the board.
+ * Host: Windows with the US-International layout (' " ` ~ ^ are dead keys there).
+ *
+ * Key positions follow the documentation labels 01-47:
+ *   Row 1: 01-12 / Row 2: 13-24 / Row 3: 25-36
+ *   Row 4: 37-41 [42 = 2U SPACE] 43-47
+ *
+ * SYS is not held directly: it turns on while NUM (41) and SYM (43) are both held.
+ */
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/rgb.h>
 #include <dt-bindings/zmk/ext_power.h>
 
+#define BASE 0
+#define SYM  1
+#define NUM  2
+#define FN   3
+#define SYS  4
+
 / {
-    // Define a default keymap here.
-    // See https://zmk.dev/docs/development/hardware-integration/new-shield#default-keymap.
+    macros {
+        bt_clear: bt_clear {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_CLR>;
+        };
+
+        /* US-Intl dead key followed by Space types the plain character. */
+        sqt_lit: sqt_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp SQT &kp SPACE>;
+        };
+
+        dqt_lit: dqt_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp DQT &kp SPACE>;
+        };
+
+        grave_lit: grave_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp GRAVE &kp SPACE>;
+        };
+
+        tilde_lit: tilde_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp TILDE &kp SPACE>;
+        };
+
+        caret_lit: caret_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp CARET &kp SPACE>;
+        };
+    };
+
+    behaviors {
+        /* Protected BT clear: fires only after a 1.5 s hold; a tap does nothing. */
+        hold_bt_clear: hold_bt_clear {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <1500>;
+            bindings = <&bt_clear>, <&none>;
+        };
+
+        /* Tap = Backspace, Shift+tap = Delete (Shift is not passed on). */
+        bspc_del: bspc_del {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp BSPC>, <&kp DEL>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        /* Tap = plain ', Shift+tap = plain " on a US-Intl host. */
+        quote_lit: quote_lit {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&sqt_lit>, <&dqt_lit>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+    };
+
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+        sys_cond {
+            if-layers = <NUM SYM>;
+            then-layer = <SYS>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
-        default_layer { // Layer 0
+        base_layer {
             display-name = "Base";
             bindings = <
-                &kp ESC    &kp Q    &kp W    &kp E    &kp R    &kp T    &kp Y    &kp U    &kp I     &kp O    &kp P     &kp BSPC
-                &kp TAB    &kp A    &kp S    &kp D    &kp F    &kp G    &kp H    &kp J    &kp K     &kp L    &kp SEMI  &kp RET
-                &kp LSHFT  &kp Z    &kp X    &kp C    &kp V    &kp B    &kp N    &kp M    &kp COMMA &kp DOT  &kp UP    &kp SQT
-                &kp LCTRL  &kp LWIN &kp LALT &mo 1    &kp LBKT    &kp SPACE      &kp FSLH &kp BSLH  &kp LEFT &kp DOWN  &kp RIGHT
+    &kp ESC    &kp Q      &kp W      &kp E      &kp R      &kp T      &kp Y      &kp U      &kp I      &kp O      &kp P      &bspc_del
+    &kp TAB    &kp A      &kp S      &kp D      &kp F      &kp G      &kp H      &kp J      &kp K      &kp L      &kp SEMI   &quote_lit
+    &kp LSHFT  &kp Z      &kp X      &kp C      &kp V      &kp B      &kp N      &kp M      &kp COMMA  &kp DOT    &kp UP     &kp RET
+    &kp LCTRL  &kp LGUI   &kp LALT   &mo FN     &mo NUM         &kp SPACE         &mo SYM    &kp MINUS  &kp LEFT   &kp DOWN   &kp RIGHT
             >;
         };
-        fn_layer { // Layer 1
+
+        /* Row 2 left: dead accents (´ ~ ^ `) then a vowel, and ç (AltGr+, on US-Intl). */
+        sym_layer {
+            display-name = "SYM";
+            bindings = <
+    &grave_lit &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT  &caret_lit &kp AMPS   &kp STAR   &kp LPAR   &kp RPAR   &tilde_lit
+    &kp SQT    &kp TILDE  &kp CARET  &kp GRAVE  &kp RA(COMMA) &kp PIPE &kp FSLH  &kp MINUS  &kp EQUAL  &kp PLUS   &kp UNDER  &kp QMARK
+    &trans     &kp LT     &kp GT     &kp LBKT   &kp RBKT   &kp BSLH   &kp LBRC   &kp RBRC   &trans     &trans     &trans     &trans
+    &trans     &trans     &trans     &trans     &trans            &trans          &trans     &trans     &trans     &trans     &trans
+            >;
+        };
+
+        /* Numpad uses number-row keycodes, so NumLock state does not matter. */
+        num_layer {
+            display-name = "NUM";
+            bindings = <
+    &trans     &kp INS    &kp PG_UP  &trans     &trans     &trans     &trans     &kp N7     &kp N8     &kp N9     &kp FSLH   &kp DEL
+    &kp HOME   &kp END    &kp PG_DN  &trans     &trans     &trans     &trans     &kp N4     &kp N5     &kp N6     &kp STAR   &kp MINUS
+    &kp CAPS   &kp PSCRN  &trans     &trans     &trans     &trans     &trans     &kp N1     &kp N2     &kp N3     &kp PLUS   &trans
+    &trans     &trans     &trans     &trans     &trans            &trans          &trans     &kp N0     &kp DOT    &kp COMMA  &kp EQUAL
+            >;
+        };
+
+        fn_layer {
             display-name = "FN";
             bindings = <
-                &kp F1     &kp F2   &kp F3   &kp F4   &kp F5   &kp F6   &kp F7   &kp F8   &kp F9    &kp F10  &kp F11   &kp F12
-                &ext_power EP_TOG     &kp N1   &kp N2   &kp N3   &kp N4   &kp N5   &kp N6   &kp N7   &kp N8    &kp N9   &kp N0    &kp DEL
-                &kp CAPS   &trans   &trans   &trans   &trans   &trans   &trans   &trans   &trans    &trans   &kp PG_UP &kp PSCRN
-                &studio_unlock     &bootloader  &trans   &trans   &trans      &trans         &trans   &trans    &kp HOME &kp PG_DN &kp END
+    &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12
+    &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans
+    &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans
+    &trans     &trans     &trans     &trans     &trans            &trans          &trans     &trans     &trans     &trans     &trans
+            >;
+        };
+
+        sys_layer {
+            display-name = "SYS";
+            bindings = <
+    &bt BT_SEL 0       &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4    &trans          &rgb_ug RGB_TOG   &rgb_ug RGB_EFF   &rgb_ug RGB_HUI   &rgb_ug RGB_SAI   &rgb_ug RGB_BRI   &rgb_ug RGB_SPI
+    &bt BT_PRV         &bt BT_NXT      &trans          &trans          &trans          &trans          &ext_power EP_TOG &rgb_ug RGB_EFR   &rgb_ug RGB_HUD   &rgb_ug RGB_SAD   &rgb_ug RGB_BRD   &rgb_ug RGB_SPD
+    &hold_bt_clear 0 0 &trans          &trans          &trans          &trans          &trans          &trans            &trans            &trans            &trans            &trans            &trans
+    &studio_unlock     &trans          &trans          &trans          &trans                   &trans                   &trans            &trans            &trans            &trans            &bootloader
             >;
         };
 
