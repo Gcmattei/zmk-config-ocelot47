@@ -1,11 +1,14 @@
 /*
- * Ocelot47 keymap: Base, SYM, NAV, FN/System.
+ * Ocelot47 keymap rev 2: Base, SYM, NUM, FN, SYS.
  *
- * Status: PROPOSED (2026-10-04). Not flashed or tested on the board.
+ * Status: layout approved by Gustavo 2026-10-05. Not flashed or tested on the board.
+ * Host: Windows with the US-International layout (' " ` ~ ^ are dead keys there).
  *
  * Key positions follow the documentation labels 01-47:
  *   Row 1: 01-12 / Row 2: 13-24 / Row 3: 25-36
  *   Row 4: 37-41 [42 = 2U SPACE] 43-47
+ *
+ * SYS is not held directly: it turns on while NUM (41) and SYM (43) are both held.
  */
 
 #include <behaviors.dtsi>
@@ -16,8 +19,9 @@
 
 #define BASE 0
 #define SYM  1
-#define NAV  2
+#define NUM  2
 #define FN   3
+#define SYS  4
 
 / {
     macros {
@@ -25,6 +29,37 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&bt BT_CLR>;
+        };
+
+        /* US-Intl dead key followed by Space types the plain character. */
+        sqt_lit: sqt_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp SQT &kp SPACE>;
+        };
+
+        dqt_lit: dqt_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp DQT &kp SPACE>;
+        };
+
+        grave_lit: grave_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp GRAVE &kp SPACE>;
+        };
+
+        tilde_lit: tilde_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp TILDE &kp SPACE>;
+        };
+
+        caret_lit: caret_lit {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp CARET &kp SPACE>;
         };
     };
 
@@ -37,6 +72,30 @@
             tapping-term-ms = <1500>;
             bindings = <&bt_clear>, <&none>;
         };
+
+        /* Tap = Backspace, Shift+tap = Delete (Shift is not passed on). */
+        bspc_del: bspc_del {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp BSPC>, <&kp DEL>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        /* Tap = plain ', Shift+tap = plain " on a US-Intl host. */
+        quote_lit: quote_lit {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&sqt_lit>, <&dqt_lit>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+    };
+
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+        sys_cond {
+            if-layers = <NUM SYM>;
+            then-layer = <SYS>;
+        };
     };
 
     keymap {
@@ -45,39 +104,51 @@
         base_layer {
             display-name = "Base";
             bindings = <
-    &kp ESC    &kp Q      &kp W      &kp E      &kp R      &kp T      &kp Y      &kp U      &kp I      &kp O      &kp P      &kp DEL
-    &kp GRAVE  &kp A      &kp S      &kp D      &kp F      &kp G      &kp H      &kp J      &kp K      &kp L      &kp SEMI   &kp SQT
-    &kp LSHFT  &kp Z      &kp X      &kp C      &kp V      &kp B      &kp N      &kp M      &kp COMMA  &kp DOT    &kp FSLH   &kp MINUS
-    &kp TAB    &kp LCTRL  &kp LALT   &mo SYM    &mo FN          &kp SPACE         &mo NAV    &kp LGUI   &kp RSHFT  &kp BSPC   &kp RET
+    &kp ESC    &kp Q      &kp W      &kp E      &kp R      &kp T      &kp Y      &kp U      &kp I      &kp O      &kp P      &bspc_del
+    &kp TAB    &kp A      &kp S      &kp D      &kp F      &kp G      &kp H      &kp J      &kp K      &kp L      &kp SEMI   &quote_lit
+    &kp LSHFT  &kp Z      &kp X      &kp C      &kp V      &kp B      &kp N      &kp M      &kp COMMA  &kp DOT    &kp UP     &kp RET
+    &kp LCTRL  &kp LGUI   &kp LALT   &mo FN     &mo NUM         &kp SPACE         &mo SYM    &kp MINUS  &kp LEFT   &kp DOWN   &kp RIGHT
             >;
         };
 
+        /* Row 2 left: dead accents (´ ~ ^ `) then a vowel, and ç (AltGr+, on US-Intl). */
         sym_layer {
             display-name = "SYM";
             bindings = <
-    &kp TILDE  &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT  &kp CARET  &kp AMPS   &kp STAR   &kp LPAR   &kp RPAR   &trans
-    &trans     &kp N1     &kp N2     &kp N3     &kp N4     &kp N5     &kp N6     &kp N7     &kp N8     &kp N9     &kp N0     &trans
-    &trans     &kp MINUS  &kp EQUAL  &kp LBKT   &kp RBKT   &kp BSLH   &kp UNDER  &kp PLUS   &kp LBRC   &kp RBRC   &kp PIPE   &trans
+    &grave_lit &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT  &caret_lit &kp AMPS   &kp STAR   &kp LPAR   &kp RPAR   &tilde_lit
+    &kp SQT    &kp TILDE  &kp CARET  &kp GRAVE  &kp RA(COMMA) &kp PIPE &kp FSLH  &kp MINUS  &kp EQUAL  &kp PLUS   &kp UNDER  &kp QMARK
+    &trans     &kp LT     &kp GT     &kp LBKT   &kp RBKT   &kp BSLH   &kp LBRC   &kp RBRC   &trans     &trans     &trans     &trans
     &trans     &trans     &trans     &trans     &trans            &trans          &trans     &trans     &trans     &trans     &trans
             >;
         };
 
-        nav_layer {
-            display-name = "NAV";
+        /* Numpad uses number-row keycodes, so NumLock state does not matter. */
+        num_layer {
+            display-name = "NUM";
             bindings = <
-    &trans     &trans     &trans     &trans     &trans     &trans     &kp HOME   &kp PG_DN  &kp PG_UP  &kp END    &kp INS    &trans
-    &trans     &trans     &trans     &trans     &trans     &trans     &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &trans     &trans
-    &kp CAPS   &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp PSCRN  &trans
-    &trans     &trans     &trans     &trans     &trans            &trans          &trans     &trans     &trans     &trans     &trans
+    &trans     &kp INS    &kp HOME   &kp PG_UP  &trans     &trans     &trans     &kp N7     &kp N8     &kp N9     &kp FSLH   &kp DEL
+    &trans     &trans     &kp END    &kp PG_DN  &trans     &trans     &trans     &kp N4     &kp N5     &kp N6     &kp STAR   &kp MINUS
+    &trans     &kp CAPS   &kp PSCRN  &trans     &trans     &trans     &trans     &kp N1     &kp N2     &kp N3     &kp PLUS   &trans
+    &trans     &trans     &trans     &trans     &trans            &trans          &trans     &kp N0     &kp DOT    &kp COMMA  &kp EQUAL
             >;
         };
 
         fn_layer {
             display-name = "FN";
             bindings = <
-    &kp F1             &kp F2          &kp F3          &kp F4          &kp F5          &kp F6          &kp F7            &kp F8            &kp F9            &kp F10           &kp F11           &kp F12
-    &bt BT_SEL 0       &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4    &bt BT_PRV      &rgb_ug RGB_TOG   &rgb_ug RGB_EFF   &rgb_ug RGB_HUI   &rgb_ug RGB_SAI   &rgb_ug RGB_BRI   &rgb_ug RGB_SPI
-    &hold_bt_clear 0 0 &trans          &trans          &trans          &trans          &bt BT_NXT      &ext_power EP_TOG &rgb_ug RGB_EFR   &rgb_ug RGB_HUD   &rgb_ug RGB_SAD   &rgb_ug RGB_BRD   &rgb_ug RGB_SPD
+    &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12
+    &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans
+    &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans
+    &trans     &trans     &trans     &trans     &trans            &trans          &trans     &trans     &trans     &trans     &trans
+            >;
+        };
+
+        sys_layer {
+            display-name = "SYS";
+            bindings = <
+    &bt BT_SEL 0       &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4    &trans          &rgb_ug RGB_TOG   &rgb_ug RGB_EFF   &rgb_ug RGB_HUI   &rgb_ug RGB_SAI   &rgb_ug RGB_BRI   &rgb_ug RGB_SPI
+    &bt BT_PRV         &bt BT_NXT      &trans          &trans          &trans          &trans          &ext_power EP_TOG &rgb_ug RGB_EFR   &rgb_ug RGB_HUD   &rgb_ug RGB_SAD   &rgb_ug RGB_BRD   &rgb_ug RGB_SPD
+    &hold_bt_clear 0 0 &trans          &trans          &trans          &trans          &trans          &trans            &trans            &trans            &trans            &trans            &trans
     &studio_unlock     &trans          &trans          &trans          &trans                   &trans                   &trans            &trans            &trans            &trans            &bootloader
             >;
         };
